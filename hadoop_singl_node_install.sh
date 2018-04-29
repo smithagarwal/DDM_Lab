@@ -1,3 +1,4 @@
+'
 #!/bin/bash
 
 echo -n "Enter the new 'GroupName' for new Hadoop user : "
@@ -70,6 +71,7 @@ sudo -u $hdUserName mkdir -p /home/$hdUserName/hadoop/hadoop_store/hdfs/datanode
 sudo -u $hdUserName chown -R $hdUserName:$hdGroup /home/$hdUserName/hadoop/hadoop_store
 
 #Giving permission to write the .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml.
+'
 
 sudo -u $hdUserName chmod o+w /home/$hdUserName/.bashrc
 sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
