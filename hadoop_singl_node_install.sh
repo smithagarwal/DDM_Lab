@@ -1,4 +1,4 @@
-:<<comment
+
 #!/bin/bash
 
 echo -n "Enter the new 'GroupName' for new Hadoop user : "
@@ -6,7 +6,7 @@ read hdGroup
 echo -n "Enter the new 'UserName' for Hadoop: "
 read hdUserName
 
-
+:<<comment
 echo "...................Updating your System.................."
 
 sudo apt-get update
