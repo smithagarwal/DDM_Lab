@@ -71,12 +71,12 @@ sudo -u $hdUserName chown -R $hdUserName:$hdGroup /home/$hdUserName/hadoop/hadoo
 
 #Giving permission to write the .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml.
 
-sudo -u hduser chmod o+w /home/$hdUserName/.bashrc
-sudo -u hduser chmod o+w /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
-sudo -u hduser chmod o+w /home/$hdUserName/hadoop/etc/hadoop/core-site.xml
-sudo -u hduser chmod o+w /home/$hdUserName/hadoop/etc/hadoop/mapred-site.xml
-sudo -u hduser chmod o+w /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
-sudo -u hduser chmod o+w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
+sudo -u $hdUserName chmod o+w /home/$hdUserName/.bashrc
+sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
+sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/core-site.xml
+sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/mapred-site.xml
+sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
+sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
 
 #hadoop-env.sh
 
@@ -97,14 +97,14 @@ sudo sed -i '/<configuration>/a <property>\n\t\t<name>yarn.nodemanager.aux-servi
 
 
 #revoking write permission for .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml files. 
-sudo -u hduser chmod o-w /home/$hdUserName/.bashrc
-sudo -u hduser chmod o-w /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
-sudo -u hduser chmod o-w /home/$hdUserName/hadoop/etc/hadoop/core-site.xml
-sudo -u hduser chmod o-w /home/$hdUserName/hadoop/etc/hadoop/mapred-site.xml
-sudo -u hduser chmod o-w /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
-sudo -u hduser chmod o-w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
+sudo -u $hdUserName chmod o-w /home/$hdUserName/.bashrc
+sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
+sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/core-site.xml
+sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/mapred-site.xml
+sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
+sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
 
 echo "--------------------HADOOP DIRECTORY------------------------- "
 sudo ls /home/$hdUserName/hadoop/
 echo "--------------------Proceed with 'yes' for continue connecting---------------------------- "
-sudo -u hduser ssh localhost
+sudo -u $hdUserName ssh localhost
