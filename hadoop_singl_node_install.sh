@@ -5,6 +5,9 @@ read hdGroup
 echo -n "Enter the new 'UserName' for Hadoop: "
 read hdUserName
 
+#Giving sudo permissions to the user
+usermod -aG sudo $hdUserName
+
 echo "...................Updating your System.................."
 
 sudo apt-get update
