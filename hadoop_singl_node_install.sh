@@ -5,9 +5,6 @@ read hdGroup
 echo -n "Enter the new 'UserName' for Hadoop: "
 read hdUserName
 
-#Giving sudo permissions to the user
-usermod -aG sudo $hdUserName
-
 echo "...................Updating your System.................."
 
 sudo apt-get update
@@ -36,6 +33,10 @@ echo "------------------Enter the Details for new HADOOP user-------------------
 sudo adduser -ingroup $hdGroup $hdUserName
 
 echo "--------New $hdGroup  GROUP is created and $hdUserName USER is assaigned to Group------------------"
+
+#Giving sudo permissions to the user
+echo "...................Giving sudo permission to the newly created user........................"
+usermod -aG sudo $hdUserName
 
 echo "------------------------Installing SSH------------------------------- "
 
@@ -98,7 +99,7 @@ sudo sed -i '/<configuration>/a <property>\n\t\t <name>mapreduce.framework.name<
 sudo sed -i '/<configuration>/a <property>\n\t\t<name>yarn.nodemanager.aux-services</name>\n\t\t<value>mapreduce_shuffle</value>\n</property>\n<property>\n\t\t<name>yarn.nodemanager.auxservices.mapreduce.shuffle.class</name>\n\t\t<value>org.apache.hadoop.mapred.ShuffleHandler</value>\n</property>' /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
 
 #hdfs-site.xml
-sudo sed -i '/<configuration>/a <property>\n\t\t<name>dfs.replication</name>\n\t\t<value>2</value>\n</property>\n<property>\n\t\t<name>dfs.permissions</name>\n\t\t<value>false</value>\n</property>\n<property>\n\t\t<name>dfs.namenode.name.dir</name>\n\t\t<value>/home/hduser/hadoop/hadoop_store/hdfs/namenode</value>\n</property>\n<property>\n\t\t<name>dfs.datanode.data.dir</name>\n\t\t<value>/home/hduser/hadoop/hadoop_store/hdfs/datanode</value>\n</property>' /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
+sudo sed -i "/<configuration>/a <property>\n\t\t<name>dfs.replication</name>\n\t\t<value>2</value>\n</property>\n<property>\n\t\t<name>dfs.permissions</name>\n\t\t<value>false</value>\n</property>\n<property>\n\t\t<name>dfs.namenode.name.dir</name>\n\t\t<value>/home/${hdUserName}/hadoop/hadoop_store/hdfs/namenode</value>\n</property>\n<property>\n\t\t<name>dfs.datanode.data.dir</name>\n\t\t<value>/home/${hdUserName}/hadoop/hadoop_store/hdfs/datanode</value>\n</property>" /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
 
 #revoking write permission for .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml files. 
 sudo -u $hdUserName chmod o-w /home/$hdUserName/.bashrc
