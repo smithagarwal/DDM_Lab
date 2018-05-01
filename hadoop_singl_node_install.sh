@@ -110,7 +110,7 @@ sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/hdfs-site.xml
 sudo -u $hdUserName chmod o-w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
 
 #Opening the port in iptables
-sudo -u $hdUserName sudo /hadoop/sbin/iptables -A INPUT -p tcp --dport 50070 -j ACCEPT
+sudo -u $hdUserName sudo /sbin/iptables -A INPUT -p tcp --dport 50070 -j ACCEPT
 
 echo "--------------------HADOOP DIRECTORY------------------------- "
 sudo ls /home/$hdUserName/hadoop/
