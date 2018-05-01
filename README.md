@@ -24,3 +24,8 @@ Install Hadoop 2.6.0 in Ubuntu remote VM
 # Step 5
 - Run jps to see the daemons running. There should be 6 daemons in total<br>
   $ jps
+
+# Step 6
+- Open a browser, type the following URL and press Enter<br>
+  http://10.XXX.XXX.XXX:50070 <br>
+- You should be able to see the hadoop namenode dashboard
