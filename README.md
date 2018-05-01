@@ -5,7 +5,7 @@ Install Hadoop 2.6.0 in Ubuntu remote VM
 - Update the /etc/hosts file in root user of your Ubuntu instance to include the remote VM instance IP
   For e.g. -> 10.XXX.XXX.XXX  master
   
-- Run the command 
+- Run the command<br> 
   $ service sshd restart
 
 # Step 2
