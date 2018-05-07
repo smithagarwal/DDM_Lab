@@ -1,4 +1,4 @@
-# Hadoop single node cluster Install procedure in a remote VM
+# Hadoop multi node cluster Install procedure in a remote VM
 Install Hadoop 2.6.0 in Ubuntu remote VM
 
 # Step 1
