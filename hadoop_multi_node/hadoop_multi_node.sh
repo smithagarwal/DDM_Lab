@@ -120,6 +120,7 @@ function install_java()
 	echo $JAVA_HOME
 	java_home=`echo $JAVA_HOME`
 	echo $java_home
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 }
 
 function add_user_group()
@@ -382,11 +383,13 @@ function hadoop_setup()
 	sudo rm -f -r /tmp/hadoop_installation
 
 	#Extracing Hadoop Files
-	sudo mkdir /tmp/hadoop_installation
-	sudo tar -xzf $HADOOP_LOCATION/$HADOOP_FILENAME -C /tmp/hadoop_installation
+	#sudo mkdir /tmp/hadoop_installation
+	sudo tar xvfz hadoop-2.6.0.tar.gz
+
+	sudo  mv hadoop-2.6.0 /home/hadoop/hadoop
 
 	#Renaming extracted folder to hadoop from `echo $HADOOP_FILENAME | sed "s/.tar.gz//g"` at $HADOOP_LOCATION
-	sudo mv /tmp/hadoop_installation/hadoop* $HADOOP_LOCATION/hadoop
+	#sudo mv /tmp/hadoop_installation/hadoop* $HADOOP_LOCATION/hadoop
 }
 
 function hadoop_configure()
