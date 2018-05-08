@@ -117,6 +117,10 @@ function install_java()
 		sudo apt-get -y install sun-java6-jdk sun-java6-jre >> /tmp/hadoop_install.log 2>&1
 		sudo update-java-alternatives -s java-6-sun >> /tmp/hadoop_install.log 2>&1
 	fi
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+	echo $JAVA_HOME
+	java_home=`echo $JAVA_HOME`
+	echo $java_home
 }
 
 function add_user_group()
@@ -402,8 +406,9 @@ function hadoop_configure()
 	fi
 
 	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh file
-	sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh > /tmp/hadoop-env.sh.mod
-	sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
+	sudo sed -i "s|\${JAVA_HOME}|$java_home|g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
+	#sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh > /tmp/hadoop-env.sh.mod
+	#sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml file for single node
 	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/core-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>hadoop.tmp.dir<\/name>\\`echo -e '\n\r'`	<value>\/app\/hadoop\/tmp<\/value>\\`echo -e '\n\r'`	<description>A base for other temporary directories\.<\/description>\\`echo -e '\n\r'`<\/property>\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>fs.default.name<\/name>\\`echo -e '\n\r'`	<value>hdfs\:\/\/master\:54310<\/value>\\`echo -e '\n\r'`	<description>The name of the default file system\. A URI whose\\`echo -e '\n\r'`	scheme and authority determine the FileSystem implementation\. The\\`echo -e '\n\r'`	uri\'s scheme determines the config property \(fs\.SCHEME\.impl\) naming\\`echo -e '\n\r'`	the FileSystem implementation class. The uri\'s authority is used to\\`echo -e '\n\r'`	determine the host\, port\, etc\. for a filesystem\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml > /tmp/core-site.xml.mod
@@ -454,7 +459,7 @@ function install_hadoop()
 		echo "=> Format hadoop filesystem using the below code:";
 		tput sgr0
 		tput setf 6
-		echo "$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND namenode -format";
+		echo "$HADOOP_LOCATION/hadoop/bin/hdfs namenode -format";
 		tput sgr0
 		if [ `cat /proc/sys/net/ipv6/etc/hadoop/all/disable_ipv6` -eq 0 ]; then
 			tput setf 6
