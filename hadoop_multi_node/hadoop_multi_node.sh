@@ -404,6 +404,10 @@ function hadoop_configure()
 		done
 	fi
 
+	#Giving sudo permissions to the user
+	echo "...................Giving sudo permission to the newly created user........................"
+	usermod -aG sudo hadoop
+
 	#Giving permission to write the .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml.
 
 	sudo -u hadoop chmod o+w /home/hadoop/.bashrc
