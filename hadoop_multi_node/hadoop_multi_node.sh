@@ -427,9 +427,9 @@ function hadoop_configure()
 	sudo mv /tmp/core-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml for single node
-	sudo cp $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml
+	sudo cp /home/hadoop/hadoop/etc/hadoop/mapred-site.xml.template /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
 	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" /home/hadoop/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
-	sudo mv /tmp/mapred-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml
+	sudo mv /tmp/mapred-site.xml.mod /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml for single node
 	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/hdfs-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>dfs\.replication<\/name>\\`echo -e '\n\r'`	<value>$SLAVECNT<\/value>\\`echo -e '\n\r'`	<description>Default block replication\.\\`echo -e '\n\r'`	The actual number of replications can be specified when the file is created\.\\`echo -e '\n\r'`	The default is used if replication is not specified in create time\.\\`echo -e '\n\r'`     <\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml > /tmp/hdfs-site.xml.mod
