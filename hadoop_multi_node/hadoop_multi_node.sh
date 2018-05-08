@@ -107,17 +107,16 @@ function install_python_software_properties()
 
 function install_java()
 {
-	printMsg "Installing Sun Java 6 JDK (Will skip if already installed)"
-	if [ `apt-cache search '^sun-java6-jdk$' | wc -l` -eq 0 ] ; then
-		sudo add-apt-repository -y ppa:ferramroberto/java >> /tmp/hadoop_install.log 2>&1
-		sudo apt-get update >> /tmp/hadoop_install.log 2>&1
-	fi
-	if [ `apt-cache policy sun-java6-jdk | grep -i installed | grep '(none)' -i -c` -eq 1 ]; then
-		sudo sh -c 'echo sun-java6-jdk shared/accepted-sun-dlj-v1-1 select true | /usr/bin/debconf-set-selections';
-		sudo apt-get -y install sun-java6-jdk sun-java6-jre >> /tmp/hadoop_install.log 2>&1
-		sudo update-java-alternatives -s java-6-sun >> /tmp/hadoop_install.log 2>&1
-	fi
-	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+	printMsg "Installing Java 8 JDK (Will skip if already installed)"
+	if [ $JAVA_VERSION -eq "8" ] ; then
+		echo "Java 7 is installed in your system "
+		export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+	else 
+		echo "-----------------Removing older version of Java and installing default JDK of Ubuntu--------------"
+		sudo apt-get autoremove java-common
+		sudo apt-get install default-jdk
+		export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+	fi 
 	echo $JAVA_HOME
 	java_home=`echo $JAVA_HOME`
 	echo $java_home
@@ -411,10 +410,11 @@ function hadoop_configure()
 	#sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml file for single node
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/core-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>hadoop.tmp.dir<\/name>\\`echo -e '\n\r'`	<value>\/app\/hadoop\/tmp<\/value>\\`echo -e '\n\r'`	<description>A base for other temporary directories\.<\/description>\\`echo -e '\n\r'`<\/property>\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>fs.default.name<\/name>\\`echo -e '\n\r'`	<value>hdfs\:\/\/master\:54310<\/value>\\`echo -e '\n\r'`	<description>The name of the default file system\. A URI whose\\`echo -e '\n\r'`	scheme and authority determine the FileSystem implementation\. The\\`echo -e '\n\r'`	uri\'s scheme determines the config property \(fs\.SCHEME\.impl\) naming\\`echo -e '\n\r'`	the FileSystem implementation class. The uri\'s authority is used to\\`echo -e '\n\r'`	determine the host\, port\, etc\. for a filesystem\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml > /tmp/core-site.xml.mod
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/core-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>hadoop.tmp.dir<\/name>\\`echo -e '\n\r'`	<value>\/app\/hadoop\/tmp<\/value>\\`echo -e '\n\r'`	<description>A base for other temporary directories\.<\/description>\\`echo -e '\n\r'`<\/property>\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>fs.default.name<\/name>\\`echo -e '\n\r'`	<value>hdfs\:\/\/master\:9000<\/value>\\`echo -e '\n\r'`	<description>The name of the default file system\. A URI whose\\`echo -e '\n\r'`	scheme and authority determine the FileSystem implementation\. The\\`echo -e '\n\r'`	uri\'s scheme determines the config property \(fs\.SCHEME\.impl\) naming\\`echo -e '\n\r'`	the FileSystem implementation class. The uri\'s authority is used to\\`echo -e '\n\r'`	determine the host\, port\, etc\. for a filesystem\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml > /tmp/core-site.xml.mod
 	sudo mv /tmp/core-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml for single node
+	sudo -u hadoop cp $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml
 	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
 	sudo mv /tmp/mapred-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml
 
