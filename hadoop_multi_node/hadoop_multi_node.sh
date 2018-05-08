@@ -428,7 +428,7 @@ function hadoop_configure()
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml for single node
 	sudo cp /home/hadoop/hadoop/etc/hadoop/mapred-site.xml.template /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" /home/hadoop/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:9000<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" /home/hadoop/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
 	sudo mv /tmp/mapred-site.xml.mod /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml for single node
@@ -437,7 +437,7 @@ function hadoop_configure()
 
 	#Changing ownership of $HADOOP_LOCATION/hadoop folder to $USER_NAME user
 	#sudo chown -R $USER_NAME:$USER_NAME $HADOOP_LOCATION/hadoop
-	sudo chmod -R 750 $HADOOP_LOCATION/hadoop
+	#sudo chmod -R 750 $HADOOP_LOCATION/hadoop
 
 	#Creating /app/hadoop/tmp folder for hadoop file system and changing ownership to $USER_NAME user
 	sudo mkdir -p /app/hadoop/tmp
