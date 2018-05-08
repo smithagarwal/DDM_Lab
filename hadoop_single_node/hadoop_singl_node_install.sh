@@ -23,7 +23,9 @@ fi
 
 #Getting JAVA_HOME value and storing in java_home variable
 
+echo $JAVA_HOME
 java_home=`echo $JAVA_HOME`
+echo $java_home
 
 echo "-----------------Adding a dedicated HADOOP user---------------------------"
 
