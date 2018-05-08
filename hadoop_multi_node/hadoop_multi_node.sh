@@ -391,31 +391,31 @@ function hadoop_configure()
 	printMsg "Configuring Hadoop (Installation Folder: $HADOOP_LOCATION/hadoop/)"
 	
 	if [[ "$1" = "m" ]]; then
-		sudo rm -f -r $HADOOP_LOCATION/hadoop/conf/masters
-		sudo mkdir -p $HADOOP_LOCATION/hadoop/conf
-		sudo echo "master" > $HADOOP_LOCATION/hadoop/conf/masters
-		sudo rm -f -r $HADOOP_LOCATION/hadoop/conf/slaves
+		sudo rm -f -r $HADOOP_LOCATION/hadoop/etc/hadoop/masters
+		sudo mkdir -p $HADOOP_LOCATION/hadoop/etc/hadoop
+		sudo echo "master" > $HADOOP_LOCATION/hadoop/etc/hadoop/masters
+		sudo rm -f -r $HADOOP_LOCATION/hadoop/etc/hadoop/slaves
 		for (( c=1; c<=$SLAVECNT; c++ ))
 		do
-			echo -e "slave$c" >> $HADOOP_LOCATION/hadoop/conf/slaves
+			echo -e "slave$c" >> $HADOOP_LOCATION/hadoop/etc/hadoop/slaves
 		done
 	fi
 
-	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/conf/hadoop-env.sh file
-	sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/conf/hadoop-env.sh > /tmp/hadoop-env.sh.mod
-	sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/conf/hadoop-env.sh
+	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh file
+	sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh > /tmp/hadoop-env.sh.mod
+	sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
 
-	#Configuring $HADOOP_LOCATION/hadoop/conf/core-site.xml file for single node
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/core-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>hadoop.tmp.dir<\/name>\\`echo -e '\n\r'`	<value>\/app\/hadoop\/tmp<\/value>\\`echo -e '\n\r'`	<description>A base for other temporary directories\.<\/description>\\`echo -e '\n\r'`<\/property>\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>fs.default.name<\/name>\\`echo -e '\n\r'`	<value>hdfs\:\/\/master\:54310<\/value>\\`echo -e '\n\r'`	<description>The name of the default file system\. A URI whose\\`echo -e '\n\r'`	scheme and authority determine the FileSystem implementation\. The\\`echo -e '\n\r'`	uri\'s scheme determines the config property \(fs\.SCHEME\.impl\) naming\\`echo -e '\n\r'`	the FileSystem implementation class. The uri\'s authority is used to\\`echo -e '\n\r'`	determine the host\, port\, etc\. for a filesystem\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/conf/core-site.xml > /tmp/core-site.xml.mod
-	sudo mv /tmp/core-site.xml.mod $HADOOP_LOCATION/hadoop/conf/core-site.xml
+	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml file for single node
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/core-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>hadoop.tmp.dir<\/name>\\`echo -e '\n\r'`	<value>\/app\/hadoop\/tmp<\/value>\\`echo -e '\n\r'`	<description>A base for other temporary directories\.<\/description>\\`echo -e '\n\r'`<\/property>\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>fs.default.name<\/name>\\`echo -e '\n\r'`	<value>hdfs\:\/\/master\:54310<\/value>\\`echo -e '\n\r'`	<description>The name of the default file system\. A URI whose\\`echo -e '\n\r'`	scheme and authority determine the FileSystem implementation\. The\\`echo -e '\n\r'`	uri\'s scheme determines the config property \(fs\.SCHEME\.impl\) naming\\`echo -e '\n\r'`	the FileSystem implementation class. The uri\'s authority is used to\\`echo -e '\n\r'`	determine the host\, port\, etc\. for a filesystem\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml > /tmp/core-site.xml.mod
+	sudo mv /tmp/core-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/core-site.xml
 
-	#Configuring $HADOOP_LOCATION/hadoop/conf/mapred-site.xml for single node
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/conf/mapred-site.xml > /tmp/mapred-site.xml.mod
-	sudo mv /tmp/mapred-site.xml.mod $HADOOP_LOCATION/hadoop/conf/mapred-site.xml
+	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml for single node
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
+	sudo mv /tmp/mapred-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml
 
-	#Configuring $HADOOP_LOCATION/hadoop/conf/hdfs-site.xml for single node
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/hdfs-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>dfs\.replication<\/name>\\`echo -e '\n\r'`	<value>$SLAVECNT<\/value>\\`echo -e '\n\r'`	<description>Default block replication\.\\`echo -e '\n\r'`	The actual number of replications can be specified when the file is created\.\\`echo -e '\n\r'`	The default is used if replication is not specified in create time\.\\`echo -e '\n\r'`     <\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/conf/hdfs-site.xml > /tmp/hdfs-site.xml.mod
-	sudo mv /tmp/hdfs-site.xml.mod $HADOOP_LOCATION/hadoop/conf/hdfs-site.xml
+	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml for single node
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/hdfs-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>dfs\.replication<\/name>\\`echo -e '\n\r'`	<value>$SLAVECNT<\/value>\\`echo -e '\n\r'`	<description>Default block replication\.\\`echo -e '\n\r'`	The actual number of replications can be specified when the file is created\.\\`echo -e '\n\r'`	The default is used if replication is not specified in create time\.\\`echo -e '\n\r'`     <\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml > /tmp/hdfs-site.xml.mod
+	sudo mv /tmp/hdfs-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml
 
 	#Changing ownership of $HADOOP_LOCATION/hadoop folder to $USER_NAME user
 	sudo chown -R $USER_NAME:$USER_NAME $HADOOP_LOCATION/hadoop
@@ -456,7 +456,7 @@ function install_hadoop()
 		tput setf 6
 		echo "$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND namenode -format";
 		tput sgr0
-		if [ `cat /proc/sys/net/ipv6/conf/all/disable_ipv6` -eq 0 ]; then
+		if [ `cat /proc/sys/net/ipv6/etc/hadoop/all/disable_ipv6` -eq 0 ]; then
 			tput setf 6
 			echo "=> Backup of /etc/sysctl.conf has been created as /etc/sysctl.conf.$now)";
 			tput setf 4
