@@ -1,12 +1,12 @@
-set -e
+#!/bin/bash
 
 # Global variable declartion, Change as per your need
 USER_NAME='hadoop'
 USER_PASS='chg2new'
-HADOOP_LOCATION="/usr/local"
-HADOOP_FILENAME="hadoop-0.20.203.0rc1.tar.gz"
-HADOOP_VERSION="0.20.203.0"
-HADOOP_DOWNLOAD="http://www.carfab.com/apachesoftware/hadoop/common/stable/$HADOOP_FILENAME"
+HADOOP_LOCATION="/home/hadoop"
+HADOOP_FILENAME="hadoop-2.6.0.tar.gz"
+HADOOP_VERSION="2.6.0"
+HADOOP_DOWNLOAD="http://archive.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz"
 HADOOP_COMMAND="hadoop"
 totCols=`tput cols`
 now=$(date +"%m-%d-%Y-%T")
@@ -362,7 +362,7 @@ function hadoop_download()
 {
 	printMsg "Downloading Hadoop Tar (Will skip if $HADOOP_FILENAME is found in $HADOOP_LOCATION or `pwd` folder)"
 	if [ ! -f $HADOOP_FILENAME ] && [ ! -f $HADOOP_LOCATION/$HADOOP_FILENAME ]; then
-		wget -O /tmp/$HADOOP_FILENAME -c $HADOOP_DOWNLOAD >> /tmp/hadoop_install.log 2>&1
+		wget $HADOOP_DOWNLOAD >> /tmp/hadoop_install.log 2>&1
 	fi
 	if [ -f $HADOOP_FILENAME ]; then
 		sudo mv /tmp/$HADOOP_FILENAME $HADOOP_LOCATION 	
@@ -391,6 +391,8 @@ function hadoop_configure()
 	printMsg "Configuring Hadoop (Installation Folder: $HADOOP_LOCATION/hadoop/)"
 	
 	if [[ "$1" = "m" ]]; then
+		sudo rm -f -r $HADOOP_LOCATION/hadoop/conf/masters
+		sudo mkdir -p $HADOOP_LOCATION/hadoop/conf
 		sudo echo "master" > $HADOOP_LOCATION/hadoop/conf/masters
 		sudo rm -f -r $HADOOP_LOCATION/hadoop/conf/slaves
 		for (( c=1; c<=$SLAVECNT; c++ ))
