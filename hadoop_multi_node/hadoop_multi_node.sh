@@ -84,7 +84,7 @@ sudo -u $hdUserName chmod o+w /home/$hdUserName/hadoop/etc/hadoop/yarn-site.xml
 
 #hadoop-env.sh
 
-
+sudo sed -i "s|\${JAVA_HOME}|$java_home|g" /home/$hdUserName/hadoop/etc/hadoop/hadoop-env.sh
 
 echo -e '\n\n #Hadoop Variable START \n export HADOOP_HOME=/home/'$hdUserName'/hadoop \n export HADOOP_INSTALL=$HADOOP_HOME \n export HADOOP_MAPRED_HOME=$HADOOP_HOME \n export HADOOP_COMMON_HOME=$HADOOP_HOME \n export HADOOP_HDFS_HOME=$HADOOP_HOME \n export YARN_HOME=$HADOOP_HOME \n export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native \n export PATH=$PATH:$HADOOP_HOME/sbin/:$HADOOP_HOME/bin \n #Hadoop Variable END\n\n' >> /home/$hdUserName/.bashrc
 
