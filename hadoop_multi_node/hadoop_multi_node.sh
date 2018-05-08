@@ -409,13 +409,13 @@ function hadoop_configure()
 	usermod -aG sudo hadoop
 
 	#Giving permission to write the .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml.
-
-	sudo -u hadoop chmod o+w /home/hadoop/.bashrc
-	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/hadoop-env.sh
-	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/core-site.xml
-	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
-	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/hdfs-site.xml
-	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/yarn-site.xml
+	sudo chown hadoop /home/hadoop/hadoop
+	sudo chmod o+w /home/hadoop/.bashrc
+	sudo chmod o+w /home/hadoop/hadoop/etc/hadoop/hadoop-env.sh
+	sudo chmod o+w /home/hadoop/hadoop/etc/hadoop/core-site.xml
+	sudo chmod o+w /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
+	sudo chmod o+w /home/hadoop/hadoop/etc/hadoop/hdfs-site.xml
+	sudo chmod o+w /home/hadoop/hadoop/etc/hadoop/yarn-site.xml
 
 	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh file
 	sudo sed -i "s|\${JAVA_HOME}|$java_home|g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
@@ -428,7 +428,7 @@ function hadoop_configure()
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml for single node
 	sudo -u hadoop cp $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml.template $HADOOP_HOME/hadoop/etc/hadoop/mapred-site.xml
-	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
+	sudo sed "s/<configuration>/<configuration>\\`echo -e '\n\r'`\\`echo -e '\n\r'`<\!-- In: conf\/mapred-site.xml -->\\`echo -e '\n\r'`<property>\\`echo -e '\n\r'`	<name>mapred\.job\.tracker<\/name>\\`echo -e '\n\r'`	<value>master\:54311<\/value>\\`echo -e '\n\r'`	<description>The host and port that the MapReduce job tracker runs\\`echo -e '\n\r'`	at\. If \"local\", then jobs are run in-process as a single map\\`echo -e '\n\r'`	and reduce task\.\\`echo -e '\n\r'`	<\/description>\\`echo -e '\n\r'`<\/property>/g" /home/hadoop/hadoop/etc/hadoop/mapred-site.xml > /tmp/mapred-site.xml.mod
 	sudo mv /tmp/mapred-site.xml.mod $HADOOP_LOCATION/hadoop/etc/hadoop/mapred-site.xml
 
 	#Configuring $HADOOP_LOCATION/hadoop/etc/hadoop/hdfs-site.xml for single node
