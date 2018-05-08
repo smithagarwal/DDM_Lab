@@ -404,6 +404,15 @@ function hadoop_configure()
 		done
 	fi
 
+	#Giving permission to write the .bashrc, hadoop-env.sh core-site.xml, mapred-site.xml, hdfs-site.xml, yarn-site.xml.
+
+	sudo -u hadoop chmod o+w /home/hadoop/.bashrc
+	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/hadoop-env.sh
+	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/core-site.xml
+	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/mapred-site.xml
+	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/hdfs-site.xml
+	sudo -u hadoop chmod o+w /home/hadoop/hadoop/etc/hadoop/yarn-site.xml
+
 	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh file
 	sudo sed -i "s|\${JAVA_HOME}|$java_home|g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
 	#sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh > /tmp/hadoop-env.sh.mod
