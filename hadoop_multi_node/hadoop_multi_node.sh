@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo -n "Enter the new 'GroupName' for new Hadoop user : "
@@ -20,11 +19,14 @@ else
 	echo "-----------------Removing older version of Java and installing default JDK of Ubuntu--------------"
 	sudo apt-get autoremove java-common
 	sudo apt-get install default-jdk
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 fi 
 
 #Getting JAVA_HOME value and storing in java_home variable
 
+echo $JAVA_HOME
 java_home=`echo $JAVA_HOME`
+echo $java_home
 
 echo "-----------------Adding a dedicated HADOOP user---------------------------"
 
