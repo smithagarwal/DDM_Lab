@@ -2,7 +2,7 @@
 
 # Global variable declartion, Change as per your need
 USER_NAME='hadoop'
-USER_PASS='chg2new'
+USER_PASS='smith'
 HADOOP_LOCATION="/home/hadoop"
 HADOOP_FILENAME="hadoop-2.6.0.tar.gz"
 HADOOP_VERSION="2.6.0"
@@ -19,33 +19,6 @@ do
 	SLAVEIP[c]=`cat hadoop_install.conf | grep slave | cut -d ":" -f2 | cut -d ',' -f$c`
 done
 
-function hadoop_notes()
-{
-	echo "**********************************************************************************"
-	echo "* You can log in to $USER_NAME user account and start hadoop services in 2 steps: *"
-	echo "* Step 1. $HADOOP_LOCATION/hadoop/bin/start-dfs.sh                               *"
-	echo "* Step 2. $HADOOP_LOCATION/hadoop/bin/start-mapred.sh                            *"
-	echo "* To check if the hadoop server started: Type 'jps' (without quotes)             *"
-	echo "* It will produce output something like this:                                    *"
-	echo "* 10227 DataNode                                                                 *"
-	echo "* 10680 Jps                                                                      *"
-	echo "* 10495 JobTracker                                                               *"
-	echo "* 10643 TaskTracker                                                              *"
-	echo "* 10081 NameNode                                                                 *"
-	echo "* 10374 SecondaryNameNode                                                        *"
-	echo "* Please note that numbers above are process id(s), so it will/might             *"
-	echo "* be different for you. Most important are the names which show                  *"
-	echo "* that the following services are up and running.                                *"
-	echo "* To stop the hadoop services, you need to follow the above 2 steps in reverse   *"
-	echo "* order and replace start word with stop.                                        *"
-	echo "* Thank you for using this script.                                               *"
-	echo "* If you face any problem, please report to me at: admin@iredlof.com             *"
-	echo "* Developed by: Rohit LalChandani                                                *"
-	echo "* Homepage: http://iredlof.com                                                   *"
-	echo "* Blog: http://blog.iredlof.com                                                  *"
-	echo "* Courtesy: Thanks to Michael (http://www.michael-noll.com)                      *"
-	echo "**********************************************************************************"
-}
 
 function check_sudo()
 {
@@ -89,21 +62,6 @@ function spinner()
     printf "    \b\b\b\b[Done]\n"
 }
 
-function install_policy_kit()
-{
-	printMsg "Installing Policy Kit (Will skip if already installed)"
-	if [ `apt-cache search '^policykit-1$' | wc -l` -eq 1 ] && [ `apt-cache policy policykit-1 | grep -i 'installed:' | grep '(none)' -i -c` -eq 1 ] ; then
-		sudo apt-get -y install policykit-1 >> /tmp/hadoop_install.log 2>&1
-	fi
-}
-
-function install_python_software_properties()
-{
-	printMsg "Installing Python Software Properties (Will skip if already installed)"
-	if [ `apt-cache search '^python-software-properties$' | wc -l` -eq 1 ] && [ `apt-cache policy python-software-properties | grep -i 'installed:' | grep '(none)' -i -c` -eq 1 ] ; then
-		sudo apt-get -y install python-software-properties >> /tmp/hadoop_install.log 2>&1
-	fi
-}
 
 function install_java()
 {
@@ -117,7 +75,7 @@ function install_java()
 		sudo apt-get install default-jdk
 		export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 	fi 
-	echo $JAVA_HOME
+	
 	java_home=`echo $JAVA_HOME`
 	echo $java_home
 	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
@@ -171,120 +129,6 @@ function ssh_configure()
 	else
 		sudo pkexec --user $USER_NAME ssh -o StrictHostKeyChecking=no $USER_NAME@slave exit >> /tmp/hadoop_install.log 2>&1
 	fi
-}
-
-function hadoop_download_test_files()
-{
-	printMsg "Downloading Test Data"
-	if [ $USER == $USER_NAME ]; then
-		
-		if [ `jps | egrep -i 'NameNode|TaskTracker' -c` -lt 2 ]; then
-			echo ''
-			tput setf 4
-			echo 'Error- Retry after starting hadoop system using option 5 from main menu'
-			tput sgr0
-			exit 1
-		fi
-		rm -r -f /tmp/gutenberg/
-		mkdir /tmp/gutenberg
-
-		wget -O /tmp/gutenberg/gutenberg1.txt http://www.gutenberg.org/ebooks/16399.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg2.txt http://www.gutenberg.org/ebooks/14900.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg3.txt http://www.gutenberg.org/ebooks/1452.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg4.txt http://www.gutenberg.org/ebooks/6693.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg5.txt http://www.gutenberg.org/ebooks/3233.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg6.txt http://www.gutenberg.org/ebooks/7937.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg7.txt http://www.gutenberg.org/ebooks/6886.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg8.txt http://www.gutenberg.org/ebooks/11772.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg9.txt http://www.gutenberg.org/ebooks/12539.txt.utf8
-		wget -O /tmp/gutenberg/gutenberg10.txt http://www.gutenberg.org/ebooks/14297.txt.utf8
-		
-		# Deleting Old Test Files From HDFS With Name: gutenberg"
-		if [ `$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -ls | grep -i -c gutenberg` -gt 0 ]; then
-			$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -rmr gutenberg	>> /tmp/hadoop_install.log 2>&1
-		fi
-
-		# Copying Test Files To HDFS"	
-		$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -copyFromLocal /tmp/gutenberg gutenberg
-	else
-		echo "[Error] Run from \"$USER_NAME\" user account."
-	fi
-}
-
-function hadoop_start()
-{
-	printMsg "Starting Hadoop System"
-	if [ $USER == $USER_NAME ]; then
-		/usr/local/hadoop/bin/start-dfs.sh >> /tmp/hadoop_install.log 2>&1
-		/usr/local/hadoop/bin/start-mapred.sh >> /tmp/hadoop_install.log 2>&1
-	else
-		"[Error] Run from \"$USER_NAME\" user account."
-	fi
-}
-
-function hadoop_stop()
-{
-	printMsg "Stopping Hadoop System"
-	if [ $USER == $USER_NAME ]; then
-		/usr/local/hadoop/bin/stop-mapred.sh >> /tmp/hadoop_install.log 2>&1
-		/usr/local/hadoop/bin/stop-dfs.sh >> /tmp/hadoop_install.log 2>&1
-	else
-		"[Error] Run from \"$USER_NAME\" user account."
-	fi
-}
-
-function hadoop_format()
-{
-	printMsg "Formatting Hadoop File System"
-	if [ $USER == $USER_NAME ]; then
-		$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND namenode -format
-	else
-		echo "[Error] Run from \"$USER_NAME\" user account."
-	fi
-}
-
-function run_test_job()
-{
-	printMsg "Executing Test Job"
-	if [ `jps | egrep -i 'NameNode|TaskTracker' -c` -lt 2 ]; then
-		echo ''
-		tput setf 4
-		echo 'Error- Retry after starting hadoop system using option 5 from main menu'
-		tput sgr0
-		exit 1
-	fi
-	if [ `$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -ls | grep -i -c gutenberg` -eq 0 ]; then
-		echo ''
-		tput setf 4
-		echo 'Error- Retry after loading test data using option 7 from main menu'
-		tput sgr0
-		exit 1
-	fi
-	if [ `$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -ls | grep -i -c -w "gutenberg-output"` -gt 0 ]; then
-		$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -rmr gutenberg-output	>> /tmp/hadoop_install.log 2>&1
-	fi
-	$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND jar $HADOOP_LOCATION/hadoop/hadoop*examples*.jar wordcount gutenberg gutenberg-output
-}
-
-function get_test_job_output()
-{
-	printMsg "Exporting Test Job Result"
-	if [ `jps | egrep -i 'NameNode|TaskTracker' -c` -lt 2 ]; then
-		echo ''
-		tput setf 4
-		echo 'Error- Retry after starting hadoop system using option 5 from main menu'
-		tput sgr0
-		exit 1
-	fi
-	if [ `$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -ls | grep -i -c gutenberg-output` -eq 0 ]; then
-		echo ''
-		tput setf 4
-		echo 'Error- Retry after running test job using option 8 from main menu'
-		tput sgr0
-		exit 1
-	fi
-	rm -r -f /tmp/gutenberg-output
-	$HADOOP_LOCATION/hadoop/bin/$HADOOP_COMMAND dfs -getmerge gutenberg-output /tmp/
 }
 
 function print_header()
@@ -357,7 +201,7 @@ function bashrc_file()
 	    	sudo echo -e "export HADOOP_HOME=$HADOOP_LOCATION/hadoop\t#Hadoop Home Folder Path" >> /home/$USER_NAME/.bashrc
 	    	sudo echo -e "export HADOOP_VERSION=$HADOOP_VERSION\t#Hadoop Version No" >> /home/$USER_NAME/.bashrc
 	    	sudo echo -e "export PATH=\$PATH:\$HADOOP_HOME/bin\t#Add Hadoop bin/ directory to PATH" >> /home/$USER_NAME/.bashrc
-		sudo echo -e "export JAVA_HOME=/usr/lib/jvm/java-6-sun\t#Java Path, Required For Hadoop" >> /home/$USER_NAME/.bashrc
+		sudo echo -e "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/" >> /home/$USER_NAME/.bashrc
 		sudo echo -e "# End: Set Hadoop-related environment variables" >> /home/$USER_NAME/.bashrc
 	fi
 }
@@ -458,8 +302,6 @@ function install_hadoop()
 	nodeType=`echo $nodeType | tr '[:upper:]' '[:lower:]'`
 	echo -e "\n"
 	if [[ "$nodeType" = "m" ]] || [[ "$nodeType" = "s" ]]; then
-		(install_policy_kit) & spinner $!
-		(install_python_software_properties) & spinner $!
 		(install_java) & spinner $!
 		(add_user_group) & spinner $!
 		(install_ssh) & spinner $!
@@ -491,62 +333,5 @@ function install_hadoop()
 	read -n 1	
 }
 
-function delete_hadoop_files()
-{
-	printMsg "Deleting Hadoop Folder ($HADOOP_LOCATION/hadoop/)"
-	sudo rm -f -r $HADOOP_LOCATION/`echo $HADOOP_FILENAME | sed "s/.tar.gz//g"`
-	sudo rm -f -r $HADOOP_LOCATION/hadoop
-	sudo rm -f -r /app
-	sudo rm -f -r /tmp/hadoop_installation	
-}
-
-function remove_hadoop()
-{
-	print_header "Uninstall Hadoop"
-	read -n 1 -p "Are you sure (y/n)? " sure
-	sure=`echo $sure | tr '[:upper:]' '[:lower:]'`
-	echo -e "\n"
-	if [[ "$sure" = 'y' ]]; then
-		(ipv6_file "r") & spinner $!
-		(host_file "r") & spinner $!
-		(bashrc_file "r") & spinner $!
-		(delete_hadoop_files) & spinner $!
-		tput setf 6
-		echo "Hadoop uninstallation complete"
-		tput sgr0
-	else
-		tput setf 4
-		echo "Hadoop uninstallation cancelled"
-		tput sgr0
-	fi
-	echo -e "\nPress a key. . ."
-	read -n 1
-}
-
-while :
-  do
-  clear
-  echo "------------------------------------------------------"
-  echo " * * * * * * * * * * Main Menu * * * * * * * * * * * *"
-  echo " * Developed By: Rohit LalChandani                   *"
-  echo " * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-  echo "------------------------------------------------------"
-  echo "[1] Install Hadoop"
-  echo "[2] Uninstall Hadoop"
-  echo "[3] View Hadoop Help Notes"
-  echo "[4] Exit (Slave/Master)"
-  echo "------------------------------------------------------"
-  echo "Current user account: $USER"
-  echo -n "Enter your menu choice [1-4]: "
-  read CHOICE
-  case $CHOICE in
-    1) clear; install_hadoop;;
-    2) clear; remove_hadoop;;
-    3) clear; hadoop_notes;;
-    4) exit 0 ;;
-    *) echo "Opps!!! Please select choice 1,2,3 or 4"
-       echo "Press a key. . ."
-       read -n 1
-       ;;
-  esac
-done
+install_hadoop
+    
