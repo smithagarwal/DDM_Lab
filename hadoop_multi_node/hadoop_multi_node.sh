@@ -76,9 +76,9 @@ function install_java()
 		export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 	fi 
 	
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 	java_home=`echo $JAVA_HOME`
 	echo $java_home
-	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
 }
 
 function add_user_group()
@@ -266,6 +266,7 @@ function hadoop_configure()
 
 	#Setting JAVA_HOME environment variable for hadoop under $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh file
 	sudo sed -i "s|\${JAVA_HOME}|$java_home|g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
+	export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/ >> /home/hadoop/hadoop/etc/hadoop/hadoop-env.sh
 	#sudo sed "s/# export JAVA_HOME=\/usr\/lib\/j2sdk[1-9].[1-9]-sun/export JAVA_HOME=\/usr\/lib\/jvm\/java-6-sun/g" $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh > /tmp/hadoop-env.sh.mod
 	#sudo mv /tmp/hadoop-env.sh.mod $HADOOP_LOCATION/hadoop/etc/hadoop/hadoop-env.sh
 
