@@ -1,0 +1,10 @@
+master ansible_ssh_host=master.dyn.mwn.de
+slave1 ansible_ssh_host=slave1.dyn.mwn.de
+slave2 ansible_ssh_host=slave2.dyn.mwn.de
+
+[M]
+master ansible_ssh_host=master.dyn.mwn.de
+
+[SLAVES]
+slave1 ansible_ssh_host=slave1.dyn.mwn.de
+slave2 ansible_ssh_host=slave2.dyn.mwn.de
