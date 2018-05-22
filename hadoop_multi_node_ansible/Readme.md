@@ -5,21 +5,27 @@
 * bootstrap.yml (Change root password, add user and serverless authentication)
 * hadoop_install.yml (Install and configure hadoop)
 
-* Certain prerequisites before running hadoop_install.yml file
-** Keep your configuration files in a folder called files or change accordingly
-** I am using a shell script to configure hadoop properties - hadoop_multi_node.sh, hadoop_install.conf
-*** hadoop_install.conf contains the ip address of the master and slaves used for configuring the /etc/hosts file
+# Step 1
+* Clone the repository to your local folder
 
-==== Run hdfs format command, disable firewall and start daemons====
+# Step 2
+* Change the hosts file based on server to which u want to push the changes
+* Change the hadoop_install.conf file inside files with master and slave Ips
 
-*After successful completion of the above scripts, run the following command in the master node
-  hdfs namenode -format
+# Step 3 (Run ansible scripts)
+* $ ansible-playbook -i hosts playbooks/bootstrap.yml  --user root
+* $ ansible-playbook -i hosts playbooks/hadoop_install.yml  --user root
 
-*Run the following command to disable firewall in all nodes so that nodes can interact with each other as a root user
-  sudo ufw disable
+# Step 4 (Run hdfs format command, disable firewall and start daemons)
+* After successful completion of the above scripts, run the following command in the master node
+  $ hdfs namenode -format
 
-*Start all the daemons by running the following command
-  ./hadoop/sbin/start-all.sh
+* Run the following command to disable firewall in all nodes so that nodes can interact with each other as a root user
+  $ sudo ufw disable
 
-*You should see the datanodes information by accessing the url [[http:master_ip:50070]] (sample [[http:master.dyn.mwn.de:50070]])
-*You should see the hadoop application web interface by accessing the url [[http:master_ip:8088]] (sample [[http:master.dyn.mwn.de:8088]])
+* Start all the daemons by running the following command
+  $ ./hadoop/sbin/start-all.sh
+
+# Step 5 (Dashboard access)
+* You should see the datanodes information by accessing the url http:master_ip:50070
+* You should see the hadoop application web interface by accessing the url http:master_ip:8088
