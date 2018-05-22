@@ -1,0 +1,41 @@
+---
+- name: Extract Hadoop
+  hosts: all
+  tasks:
+      - unarchive:
+          src: http://archive.apache.org/dist/hadoop/core/hadoop-2.6.0/hadoop-2.6.0.tar.gz
+          dest: /home/hadoop/
+          remote_src: yes
+          creates: /home/hadoop/hadoop
+
+      - command: mv /home/hadoop/hadoop-2.6.0 /home/hadoop/hadoop creates=/home/hadoop/hadoop removes=/home/hadoop/hadoop-2.6.0
+
+      - lineinfile: path=/home/hadoop/.bashrc regexp="HADOOP_PREFIX=" line="export HADOOP_PREFIX=/home/hadoop/hadoop"
+      - lineinfile: path=/home/hadoop/.bashrc regexp="PATH=" line="export PATH=$PATH:$HADOOP_PREFIX/bin"
+
+- name: Update the xml files
+  hosts: all
+  tasks:
+      - template: src={{ item.src }} dest={{ item.dest }} owner="hadoop" group="hadoop"
+        with_items:
+         - {src: "../files/core-site.xml", dest: "/home/hadoop/hadoop/etc/hadoop/core-site.xml"}
+         - {src: "../files/hdfs-site.xml", dest: "/home/hadoop/hadoop/etc/hadoop/hdfs-site.xml"}
+         - {src: "../files/yarn-site.xml", dest: "/home/hadoop/hadoop/etc/hadoop/yarn-site.xml"}
+         - {src: "../files/mapred-site.xml", dest: "/home/hadoop/hadoop/etc/hadoop/mapred-site.xml"}
+
+
+- hosts: all
+  gather_facts: True
+  vars:
+    - username: hadoop
+
+  tasks:
+  - name: Transfer the script
+    copy: src=../files/hadoop_multi_node.sh dest=/root mode=0777
+
+  - name: Transfer the configuration file
+    copy: src=../files/hadoop_install.conf dest=/root mode=0777
+
+  - name: Execute the script
+    shell: yes | /root/hadoop_multi_node.sh
+    register: output
