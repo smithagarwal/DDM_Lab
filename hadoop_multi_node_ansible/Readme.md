@@ -1,9 +1,9 @@
 
-===Hadoop automation using ansible===
+#Hadoop automation using ansible
 
-*Finally succeeded in automating the setup of hadoop multinode cluster. I am currently using two ansible scripts for this
-**bootstrap.yml
-**hadoop_install.yml
+##I am currently using two ansible scripts for this
+--bootstrap.yml
+--hadoop_install.yml
 
 ====bootstrap.yml (Change root password, add user and serverless authentication)====
 
